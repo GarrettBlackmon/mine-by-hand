@@ -4,7 +4,7 @@
     
     <div v-if="lastHash" class="bg-gray-800 p-6 rounded-lg">
       <div class="text-gray-400 mb-2">Last Hash:</div>
-      <HashDisplay :hash="lastHash" :target-zeros="targetDifficulty" ref="hashDisplay" />
+      <HashDisplay :hash="lastHash" :target-zeros="blockStore.blockData.targetDifficulty" ref="hashDisplay" />
     </div>
 
     <div class="space-y-4">
@@ -66,13 +66,9 @@ import { ref, onMounted, onBeforeUnmount } from 'vue'
 import CryptoJS from 'crypto-js'
 import HashDisplay from './HashDisplay.vue'
 import InspirationMessage from './InspirationMessage.vue'
+import { useBlockStore } from '../stores/blockData'
 
-const props = defineProps({
-  targetDifficulty: {
-    type: Number,
-    default: 4
-  }
-})
+const blockStore = useBlockStore()
 
 const nonce = ref('')
 const btcAddress = ref('')
@@ -95,33 +91,40 @@ const checkNonce = () => {
   const hash = CryptoJS.SHA256(CryptoJS.SHA256(toHash)).toString()
   
   lastHash.value = hash
-  const target = '0'.repeat(props.targetDifficulty)
+  const target = '0'.repeat(blockStore.blockData.targetDifficulty)
   isValid.value = hash.startsWith(target)
   
-  inspiration.value.setRandomMessage(isValid.value)
-  nonce.value = ''
+  // Calculate leading zeros directly
+  const leadingZeros = (hash.match(/^0+/) || [''])[0].length
+  lastLeadingZeros.value = Math.min(leadingZeros, blockStore.blockData.targetDifficulty)
   
-  // Get leading zeros from HashDisplay
-  lastLeadingZeros.value = hashDisplay.value.splitIndex
+  // Update best score
   if (lastLeadingZeros.value > bestScore.value) {
     bestScore.value = lastLeadingZeros.value
   }
+  
+  // Debug logging
+  console.log(`Hash: ${hash}, Leading Zeros: ${leadingZeros}, Best: ${bestScore.value}, Valid: ${isValid.value}`)
+  
+  // Now check if we should stop
+  if (isValid.value) {
+    stopMining()
+  }
+  
+  inspiration.value.setRandomMessage(isValid.value)
+  nonce.value = ''
 }
 
 const toggleMining = () => {
   if (!isMining.value) {
     startTime = Date.now()
     attemptCount.value = 0
+    bestScore.value = 0
     isMining.value = true
     miningInterval = setInterval(() => {
       nonce.value = Math.floor(Math.random() * 1e12).toString()
       checkNonce()
       attemptCount.value++
-      
-      // Stop mining if we found a valid block!
-      if (isValid.value) {
-        stopMining()
-      }
       
       // Calculate attempts/sec
       const elapsed = (Date.now() - startTime) / 1000

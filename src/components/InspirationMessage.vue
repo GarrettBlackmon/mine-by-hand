@@ -19,7 +19,7 @@ const messages = [
   "Maybe try u...HOLD UP... IS THAT A BLOCK?",
 ]
 
-const currentMessage = ref(messages[0])
+const currentMessage = ref('')
 
 defineExpose({
   setRandomMessage: (isValid) => {
@@ -31,6 +31,6 @@ defineExpose({
 })
 
 onMounted(() => {
-  currentMessage.value = messages[Math.floor(Math.random() * messages.length)]
+  
 })
 </script> 
