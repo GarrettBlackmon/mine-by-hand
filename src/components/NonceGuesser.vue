@@ -1,13 +1,13 @@
 <template>
-  <div class="space-y-6">
-    <InspirationMessage ref="inspiration" />
+  <div>
+    <InspirationMessage ref="inspiration" class="mt-4" />
     
     <div v-if="lastHash" class="bg-gray-800 p-6 rounded-lg">
       <div class="text-gray-400 mb-2">Last Hash:</div>
       <HashDisplay :hash="lastHash" :target-zeros="blockStore.blockData.targetDifficulty" ref="hashDisplay" />
     </div>
 
-    <div class="space-y-4">
+    <div class="mt-4 space-y-4">
       <div class="flex gap-4">
         <input 
           v-model="nonce"
@@ -42,21 +42,27 @@
       </button>
     </div>
 
-    <div v-if="isDevMode" class="text-center space-y-2">
+    <div v-if="isDevMode" class="fixed bottom-4 left-4 space-y-1">
+      <div class="space-y-0.5">
+        <div class="text-xs text-gray-400">
+          Attempts: {{ attemptCount }}
+        </div>
+        <div class="text-xs text-gray-400">
+          Attempts/Sec: {{ Math.round(attemptRate) }}
+        </div>
+        <div class="text-xs text-gray-400">
+          Best: {{ bestScore }} leading zeros
+        </div>
+      </div>
       <button 
         @click="toggleMining"
         :class="[
-          'px-4 py-2 rounded text-sm transition',
-          isMining ? 'bg-red-600 hover:bg-red-700' : 'bg-purple-600 hover:bg-purple-700'
+          'px-4 py-2 rounded text-sm transition w-40',
+          isMining ? 'bg-red-600 hover:bg-red-700' : 'bg-yellow-700 hover:bg-yellow-800'
         ]"
       >
-        {{ isMining ? `⛏️ Mining (${attemptCount})...` : '⛏️ Start Auto-Miner' }}
+        {{ isMining ? '⛏️ Mining...' : '⛏️ Start Auto-Miner' }}
       </button>
-      <div class="text-xs text-gray-400">
-        {{ Math.round(attemptRate) }} attempts/sec
-        <br>
-        Best: {{ bestScore }} leading zeros
-      </div>
     </div>
   </div>
 </template>
@@ -138,6 +144,11 @@ const toggleMining = () => {
 const stopMining = () => {
   clearInterval(miningInterval)
   isMining.value = false
-  attemptRate.value = 0
+  // Reset values after stopping
+  setTimeout(() => {
+    attemptCount.value = 0
+    bestScore.value = 0
+    attemptRate.value = 0
+  }, 0)
 }
 </script> 

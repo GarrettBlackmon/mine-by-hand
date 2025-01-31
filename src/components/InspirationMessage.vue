@@ -1,36 +1,43 @@
 <template>
-  <div class="text-xl text-center my-6 h-12 text-yellow-400">
+  <div class="text-base text-center text-gray-400 font-mono">
     {{ currentMessage }}
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 
 const messages = [
-  "Your CPU is crying right now",
-  "Only a few trillion more combinations to try!",
-  "An ASIC miner just found 50 blocks while you typed that",
-  "Maybe try using your lucky numbers?",
-  "Pro tip: Yelling at your screen won't help",
-  "Your electricity bill thanks you",
-  "Somewhere, Satoshi is laughing",
+  "Mining... slowly but surely",
+  "Your CPU is working hard. Probably.",
+  "This is definitely the most efficient way to mine",
+  "Only a few million more attempts to go",
+  "ASICs? Never heard of them",
+  "Your electricity company thanks you",
+  "Satoshi would be proud. Maybe.",
   "Have you tried turning it off and on again?",
-  "Maybe try u...HOLD UP... IS THAT A BLOCK?",
+  "This is fine. Everything is fine.",
+  "Mining at the speed of... well, JavaScript",
+  "Proof of Work? More like Proof of Waiting",
+  "At least it's not Proof of Stake",
+  "Your patience is... admirable",
+  "This is what decentralization looks like",
+  "Mining: the original blockchain game",
+  "Your nonce is in another castle",
+  "This is the future of finance",
+  "Your hash rate is... something",
+  "Mining: because why not?",
+  "This is definitely not a waste of energy"
 ]
 
-const currentMessage = ref('')
+const currentMessage = ref(messages[0])
 
 defineExpose({
   setRandomMessage: (isValid) => {
     const newMessage = isValid 
-      ? messages[messages.length - 1] 
-      : messages[Math.floor(Math.random() * (messages.length - 1))]
+      ? "Congratulations. You did it. Now do it 143 more times."
+      : messages[Math.floor(Math.random() * messages.length)]
     currentMessage.value = newMessage
   }
-})
-
-onMounted(() => {
-  
 })
 </script> 
