@@ -42,7 +42,7 @@
       </button>
     </div>
 
-    <div v-if="isDevMode" class="fixed bottom-4 left-4 space-y-1">
+    <div v-if="isDevMode || isMinerEnabledinProd" class="fixed bottom-4 left-4 space-y-1">
       <div class="space-y-0.5">
         <div class="text-xs text-gray-400">
           Attempts: {{ attemptCount }}
@@ -82,6 +82,7 @@ const lastHash = ref('')
 const isValid = ref(false)
 const inspiration = ref(null)
 const isDevMode = ref(import.meta.env.MODE === 'development')
+const isMinerEnabledinProd = ref(true)
 const isMining = ref(false)
 const attemptCount = ref(0)
 const attemptRate = ref(0)
