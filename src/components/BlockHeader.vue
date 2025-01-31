@@ -5,12 +5,15 @@
       <div class="space-y-2 p-4">
         <div>Version: <span class="text-blue-400">{{ blockStore.blockData.version }}</span></div>
         <div class="break-all">Previous Block: <span class="text-blue-400">{{ blockStore.blockData.prevBlock }}</span></div>
-        <div>Bits: <span class="text-blue-400">{{ blockStore.blockData.bits }}</span></div>
+        <div>
+          Bits: <span class="text-blue-400">{{ blockStore.blockData.bits }}</span>
+          <span class="text-gray-500 text-xs ml-2 italic">({{ blockStore.blockData.targetDifficulty }} leading zeros)</span>
+        </div>
       </div>
       <div class="space-y-2 p-4">
         <div>Time: <span class="text-blue-400">{{ blockStore.blockData.time }}</span></div>
         <div class="break-all">Merkle Root: <span class="text-blue-400">{{ blockStore.blockData.merkleRoot }}</span></div>
-        <div>Target Difficulty: <span class="text-blue-400">{{ blockStore.blockData.targetDifficulty }} leading zeros</span></div>
+        <div>Nonce: <span class="text-blue-400">{{ blockStore.blockData.nonce || 'Not set' }}</span></div>
       </div>
     </div>
 
@@ -28,18 +31,7 @@
 
 <script setup>
 import { useBlockStore } from '../stores/blockData'
-
 const blockStore = useBlockStore()
-
-// Copy raw data to clipboard
-const copyRawData = async () => {
-  try {
-    await navigator.clipboard.writeText(blockStore.rawBlockHeader)
-    alert('Raw block header copied to clipboard!')
-  } catch (err) {
-    console.error('Failed to copy:', err)
-  }
-}
 </script>
 
 <style>

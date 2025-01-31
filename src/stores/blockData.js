@@ -3,12 +3,13 @@ import { defineStore } from 'pinia'
 
 export const useBlockStore = defineStore('blockData', () => {
   const blockData = ref({
-    version: '0x20000000',
+    version: '20000000',
     prevBlock: '00000000000000000007878ec04bb2b2e12317804810f4c26033585b3f81ffaa',
     merkleRoot: '8e679c6bed7dc4a0c5e3c06f0ad5b190b71bd0b7c6824e61b0b34edfc7f2866b',
     time: new Date().toISOString(),
-    bits: '0x1a44b9f2',
-    targetDifficulty: 2,
+    bits: '1a44b9f2',
+    targetDifficulty: 4,
+    nonce: ''
   })
 
   const rawBlockHeader = computed(() => {
@@ -17,10 +18,10 @@ export const useBlockStore = defineStore('blockData', () => {
       data.version,
       data.prevBlock,
       data.merkleRoot,
-      new Date(data.time).getTime().toString(16),
+      Math.floor(Date.now() / 1000).toString(16).padStart(8, '0'),
       data.bits,
-      data.targetDifficulty.toString(16)
-    ].join('')
+      parseInt(data.nonce || 0).toString(16).padStart(8, '0')
+    ].map(field => field.toLowerCase()).join('')
   })
 
   return { blockData, rawBlockHeader }

@@ -117,6 +117,9 @@ const checkNonce = () => {
     stopMining()
   }
   
+  // Update store with current nonce
+  blockStore.blockData.nonce = nonce.value
+  
   inspiration.value.setRandomMessage(isValid.value)
   nonce.value = ''
 }
